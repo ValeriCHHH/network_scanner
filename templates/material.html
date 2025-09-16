@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ material.title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="material-container">
+    <article class="material-article">
+        <header class="material-header">
+            <nav class="breadcrumb">
+                <a href="/">Главная</a> &raquo; 
+                <span class="category">{{ material.category }}</span> &raquo; 
+                <span>{{ material.title }}</span>
+            </nav>
+            
+            <h1 class="material-title">{{ material.title }}</h1>
+            
+            <div class="material-meta">
+                <span class="material-date">
+                    📅 {{ material.created_at.strftime('%d.%m.%Y %H:%M') }}
+                </span>
+                <span class="material-category">
+                    🏷️ {{ material.category }}
+                </span>
+            </div>
+        </header>
+
+        <div class="material-content">
+            {{ material.content|replace('\n', '<br>')|safe }}
+        </div>
+
+        <footer class="material-footer">
+            <div class="material-actions">
+                <a href="/" class="btn-back">← Назад к списку</a>
+                {% if request.cookies.get('access_token') %}
+                <a href="/admin/dashboard" class="btn-edit">✏️ Редактировать</a>
+                {% endif %}
+            </div>
+            
+            <div class="material-tags">
+                <span class="tags-label">Теги:</span>
+                <span class="tag">{{ material.category }}</span>
+                <span class="tag">статья</span>
+            </div>
+        </footer>
+    </article>
+
+    <div class="related-materials">
+        <h3>Другие материалы</h3>
+        <div class="related-grid">
+            {% for related in materials[:3] if related.id != material.id %}
+            <div class="related-card">
+                <h4>{{ related.title }}</h4>
+                <p class="related-date">{{ related.created_at.strftime('%d.%m.%Y') }}</p>
+                <p>{{ related.content[:100] }}...</p>
+                <a href="/material/{{ related.id }}" class="read-more">Читать далее</a>
+            </div>
+            {% else %}
+            <p>Пока нет других материалов</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

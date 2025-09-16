@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Админ-панель - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h2>Админ-панель</h2>
+    <p>Добро пожаловать, {{ user.username }}! <a href="/admin/logout">Выйти</a></p>
+    
+    <div class="admin-section">
+        <h3>Добавить новый материал</h3>
+        <form method="post" action="/admin/add-material" class="material-form">
+            <div class="form-group">
+                <label for="title">Заголовок:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Категория:</label>
+                <select id="category" name="category">
+                    <option value="general">Общее</option>
+                    <option value="news">Новости</option>
+                    <option value="blog">Блог</option>
+                    <option value="portfolio">Портфолио</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="content">Содержание:</label>
+                <textarea id="content" name="content" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Добавить материал</button>
+        </form>
+    </div>
+    
+    <div class="admin-section">
+        <h3>Существующие материалы ({{ materials|length }})</h3>
+        <div class="materials-list">
+            {% for material in materials %}
+            <div class="material-item">
+                <h4>{{ material.title }}</h4>
+                <p class="material-meta">
+                    <span class="category">{{ material.category }}</span> | 
+                    <span class="date">{{ material.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </p>
+                <p>{{ material.content[:100] }}...</p>
+                <form method="post" action="/admin/delete-material/{{ material.id }}" style="display: inline;">
+                    <button type="submit" class="btn-danger" onclick="return confirm('Удалить этот материал?')">Удалить</button>
+                </form>
+            </div>
+            {% else %}
+            <p>Нет материалов</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

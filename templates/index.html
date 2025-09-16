@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Добро пожаловать на мой сайт!</h1>
+    <p>Здесь вы найдете полезные материалы и информацию обо мне</p>
+</div>
+
+<div class="materials-grid">
+    {% for material in materials %}
+    <div class="material-card">
+        <h3>{{ material.title }}</h3>
+        <p class="material-date">{{ material.created_at }}</p>
+        <p>{{ material.content[:100] }}{% if material.content|length > 100 %}...{% endif %}</p>
+        <a href="/material/{{ material.id }}" class="read-more">Читать далее</a>
+    </div>
+    {% else %}
+    <div class="no-materials">
+        <p>Пока нет материалов. Зайдите позже!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
